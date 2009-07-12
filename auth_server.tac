@@ -1,7 +1,6 @@
 # Authentication server for Skule.ca
 # Copyright James Cash 2009
 
-# FIXME: twisted.enterprise is deprecated, replace with something better
 from twisted.enterprise import adbapi
 from twisted.cred import portal, checkers, credentials, error as credError
 from twisted.protocols import basic
@@ -46,7 +45,7 @@ class DbPasswordChecker(object):
             "select userid, password from user where username = ?", (credentials.username,)).addCallback(
             self._gotQueryResults, credentials)
 
-    def _getQueryResults(self, rows, userCredentials):
+    def _gotQueryResults(self, rows, userCredentials):
         """Callback which is called upon successful retrieval of the user's credentials from the database
 
         Arguments:
@@ -88,10 +87,10 @@ class DbRealm:
         - `mind`:
         - `*interfaces`:
         """
-        if simplecred.INamedUserAvatar in interfaces:
+        if INamedUserAvatar in interfaces:
             return self.dbconn.runQuery(
                 "select username, firstname, lastname from user where userid = ?",
-                (avatarId)).addCallBack(
+                (avatarId,)).addCallBack(
                 self._gotQueryResults)
         else:
             raise KeyError("None of the requested interfaces is supported")
@@ -105,8 +104,8 @@ class DbRealm:
         """
         username, firstname, lastname = rows[0]
         fullname = "%s %s" % (firstname, lastname)
-        return (simplecred.INamedUserAvatar,
-                simplecred.NamedUserAvatar(username, fullname),
+        return (INamedUserAvatar,
+                NamedUserAvatar(username, fullname),
                 lambda: None)    
 
 
@@ -177,17 +176,20 @@ class LoginTestFactory(protocol.ServerFactory):
 users = { 'foo': 'Foo Bar'}
 passwords = {'foo': 'bar'}
 
-DB_DRIVER = "sqlite"
+DB_DRIVER = "sqlite3"
 DB_ARGS = {
     'db': 'test.db',
     'user': 'tester',
     'passwd': 'tester',
     }
 
-if __name__ == "__main__":
+def startTest():
     connection = adbapi.ConnectionPool(DB_DRIVER, **DB_ARGS)
     p = portal.Portal(DbRealm(connection))
     p.registerChecker(DbPasswordChecker(connection))
-    factory = simplecred.LoginTestFactory(p)
+    factory = LoginTestFactory(p)
     reactor.listenTCP(2323, factory)
     reactor.run()
+
+if __name__ == "__main__":
+    startTest()
