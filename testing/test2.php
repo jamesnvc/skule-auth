@@ -1,9 +1,12 @@
 <html>
-<head>
-<title>Test 2</title>
-</head>
+<head><title>Test 2</title></head>
 <body>
-<?php if ($_POST['bar'] == "aoeu") { ?>
+<pre>
+<?php
+print_r($_COOKIE);
+?>
+</pre>
+<?php if ($_POST['bar'] == $_COOKIE['sid']) { ?>
 <p>You entered <? echo $_POST['foo'] ?></p>
 <?php } else { ?>
 <p>Authentication error!</p>
