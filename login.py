@@ -4,6 +4,7 @@ import crypt, string
 import cgi
 import cgitb; cgitb.enable()
 import Cookie
+from twisted.web import xmlrpc
 
 salt = 'ab'
 max_age = 30*60 # 30 minutes maximum age
@@ -15,6 +16,9 @@ name = form.getvalue('username')
 pln_password = form.getvalue('password')
 password = crypt.crypt(pln_password,salt)
 
+auth = xmlrpc.Proxy('http://localhost:8082/auth')
+res = auth.validateUser(name, password)
+    
 loggedinCookie = Cookie.SimpleCookie()
 loggedinCookie['username'] = name
 loggedinCookie['username']['max-age'] = max_age

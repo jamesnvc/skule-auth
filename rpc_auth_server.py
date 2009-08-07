@@ -46,14 +46,14 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
 DB_DRIVER = "sqlite3"
 DB_ARGS = {
     'db': 'test.db',
-    # 'user': 'tester',
-    # 'passwd': 'tester',
+    'user': 'tester',
+    'passwd': 'tester',
     }
 
 if __name__ == "__main__":
     from twisted.internet import reactor
     from twisted.web import resource
-    connection = adbapi.ConnectionPool(DB_DRIVER, cp_noisy=True, **DB_ARGS)
+    connection = adbapi.ConnectionPool(DB_DRIVER, 'test.db')
     root = resource.Resource()
     root.putChild('auth', AuthXmlRpc(connection))
     reactor.listenTCP(8082, server.Site(root))
