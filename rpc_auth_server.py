@@ -13,6 +13,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         - `dbconn`: Database connection to autheticate users against
         """
         self.dbconn = dbconn
+        self.allowNone = True
 
     def xmlrpc_validateUser(self,username,hsh_pw):
         """Validate the given username/password
@@ -39,9 +40,9 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
             if password == pw:
                 return (userid, password)
             else:
-                return False
+                return False # wrong password
         else:
-            return False
+            return False # No such user
 
 DB_DRIVER = "sqlite3"
 DB_ARGS = {
