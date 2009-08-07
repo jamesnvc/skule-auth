@@ -6,10 +6,11 @@
 print_r($_COOKIE);
 ?>
 </pre>
-<?php if ($_POST['bar'] == $_COOKIE['sid']) { ?>
+<?php if (isset($_COOKIE['sid']) && $_POST['bar'] == $_COOKIE['sid'] ) { ?>
 <p>You entered <? echo $_POST['foo'] ?></p>
 <?php } else { ?>
 <p>Authentication error!</p>
+<p><a href="./test1.php">Try again?</a></p>
 <?php } ?>
 </body>
 </html>
