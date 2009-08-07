@@ -1,10 +1,12 @@
-#!/usr/bin/python
-import os, sys
-import crypt, string
+#!/usr/bin/env python2.5
+import os
+import sys
+import crypt
+import string
 import cgi
 import cgitb; cgitb.enable()
 import Cookie
-from twisted.web import xmlrpc
+import xmlrpclib
 
 salt = 'ab'
 max_age = 30*60 # 30 minutes maximum age
@@ -16,8 +18,13 @@ name = form.getvalue('username')
 pln_password = form.getvalue('password')
 password = crypt.crypt(pln_password,salt)
 
-auth = xmlrpc.Proxy('http://localhost:8082/auth')
+auth = xmlrpclib.ServerProxy('http://localhost:8082/auth')
 res = auth.validateUser(name, password)
+if not res:
+    print 'Status: 302 Moved Temporarily'
+    print "Location: ../testing/test1.php"
+    print
+    exit
     
 loggedinCookie = Cookie.SimpleCookie()
 loggedinCookie['username'] = name
