@@ -1,11 +1,14 @@
 CREATE TABLE user (
 userid int NOT NULL PRIMARY KEY,
 username varchar(20) NOT NULL,
-pasword varchar(50) NOT NULL,
+password varchar(50) NOT NULL,
 firstname varchar(100),
 lastname varchar(100)
 );
 
-INSERT INTO user VALUES (1, 'admin', 'aaa', 'Admin', 'User');
-INSERT INTO user VALUES (2, 'test1', 'bbb', 'Joe', 'Smith');
-INSERT INTO user VALUES (3, 'test2', 'ccc', 'Bob', 'King');
+-- Password is 'aaa'
+INSERT INTO user VALUES (1, 'admin', 'ab5OR/l8cWmIc', 'Admin', 'User');
+-- Password is 'bbb'
+INSERT INTO user VALUES (2, 'test1', 'abjKJAkaL5HaE', 'Joe', 'Smith');
+-- Password is 'ccc'
+INSERT INTO user VALUES (3, 'test2', 'abmPzTXULWrKw', 'Bob', 'King');
