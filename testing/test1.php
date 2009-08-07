@@ -14,9 +14,11 @@ print_r($_COOKIE);
 <p>Test One:
 <?php if (isset($_COOKIE['username'])) { ?>
    <p>Hello, <? echo $_COOKIE['username'] ?>!</p>
+   <p><form action="logout.php" method="POST"><input type="submit" value="Logout"/></form></p>
 <?php    } else { ?>
    <p>Please <a href="./login.html">Login</a></p>
      <?php } ?>
+<?php echo time() ?>     
 <form action="test2.php" method="POST">
    <label title="A string" for="foo">String:
       <input type="text" name="foo" />
