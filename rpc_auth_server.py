@@ -25,15 +25,15 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         return self.dbconn.runQuery(
             "select userid, password from user where username = ? and password = ?",
             (username, hsh_pw)).addCallback(
-            self._gotQueryResults, hsh_pw
+            self._gotValidateQueryResults, hsh_pw
             )
 
-    def _gotQueryResults(self, rows, pw):
+    def _gotValitateQueryResults(self, rows, pw):
         """Callback to process successful retrieval of user info from database
 
         Arguments:
-        - `rows`:
-        - `pw`:
+        - `rows`: Results
+        - `pw`: Hash of password from the user
         """
         if rows:
             userid, password = rows[0]
@@ -43,6 +43,40 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
                 return False # wrong password
         else:
             return False # No such user
+
+    def xmlrpc_userExists(self, username):
+        """Check if a user with the given name exists in the database.
+        Returns the userid if so, false otherwise.
+        
+        Arguments:
+        - `username`: Name to check
+        """
+        return self.dbconn.runQuery(
+            "select userid from user where username = ?", (username,)).addCallback(
+            self._gotExistsQueryResults)
+
+    def _gotExistsQueryResults(self, rows):
+        """Callback to process successful retrieval of username from database
+        
+        Arguments:
+        - `rows`: results
+        """
+        if rows:
+            return rows[0][0]
+        else:
+            return False
+
+    def xmlrpc_createUser(self, username, passwd):
+        """Adds a user named `username` to the database, with the hashed password `passwd`
+        
+        Arguments:
+        - `username`: username to add
+        - `passwd`: Hash of password for new user
+        """
+        
+        
+        
+        
 
 DB_DRIVER = "sqlite3"
 DB_ARGS = {

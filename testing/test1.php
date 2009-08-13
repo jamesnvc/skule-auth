@@ -1,8 +1,3 @@
-<?php
-// Use a session to store the random value between pages
-session_start();
-$_SESSION['rand_val'] = rand();
-?>
 <html>
 <head><title>Test 1</title></head>
 <body>
