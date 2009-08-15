@@ -13,10 +13,19 @@
       <input type="submit" name="submit"/>
     </form>
     <h1>Register</h1>
-    <form method="POST" action="http://localhost/~james/cgi-bin/create.py">
+    <form method="POST" action="http://localhost/~james/cgi-bin/check.py">
       <label for="new_username">Username</label>
       <input type="text" id="new_username" name="new_username"/>
       <input type="submit" name="submit_create"/>
     </form>
+    <form method="POST" action="http://localhost/~james/cgi-bin/create.py">
+      <label for="create_name">Username</label>
+      <input type="text" name="create_name" id="create_name"/> 
+      <label for="create_password">Password</label>
+      <input type="password" name="create_password" id="create_password" />
+      <label for="verify_password">Verify password</label>
+      <input type="password" name="verify_password" id="verify_password" />
+    </form>
   </body>
 </html>
+
