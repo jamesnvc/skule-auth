@@ -66,19 +66,31 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         else:
             return False
 
-    def xmlrpc_createUser(self, username, passwd):
-        """Adds a user named `username` to the database, with the hashed password `passwd`
+    def xmlrpc_createUser(self, username, passwd, fname, lname):
+        """Adds a user named `username` to the database, with the hashed password `passwd`, 
+		   first name `fname`, last name `lname`
         
         Arguments:
         - `username`: username to add
         - `passwd`: Hash of password for new user
+        - `fname`: First name
+        - `lname`: Last name
         """
+        self.dbconn.runQuery(
+            "insert into users (username, password, firstname, lastname)) values (?, ?, ?, ?)" ,
+            (username, passwd, fname, lname)).addCallback(
+            _self._addedUser)
+
+    def _addedUser(self, rows):
+        """Callback after successfully adding a user
         
-        
-        
+        Arguments:
+        - `rows`:  result set
+        """
+        return True
         
 
-DB_DRIVER = "sqlite3"
+db_DRIVER = "sqlite3"
 DB_ARGS = {
     'db': 'test.db',
     'user': 'tester',
