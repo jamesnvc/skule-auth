@@ -1,5 +1,5 @@
 CREATE TABLE user (
-userid int NOT NULL PRIMARY KEY,
+userid INTEGER PRIMARY KEY,
 username varchar(20) NOT NULL,
 password varchar(50) NOT NULL,
 firstname varchar(100),

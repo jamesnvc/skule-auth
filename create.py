@@ -1,3 +1,4 @@
+#!/usr/bin/env python2.5
 # Add a new user
 import xmlrpclib
 import cgi
@@ -8,7 +9,17 @@ cgitb.enable()
 form = cgi.FieldStorage()
 uname = form.getvalue('create_name')
 passwd = form.getvalue('create_password')
-hsh_pw = crypt.crypt(passwd, 'ab')
+passwd2 = form.getvalue('verify_password')
+if passwd == passwd2:
+    hsh_pw = crypt.crypt(passwd, 'ab')
+else:
+    print 'Content-type: text/html'
+    print
+    print '<html><head><title>User exists checking</title></head>'
+    print '<body>'
+    print '<p>Passwords don\'t match</p>'
+    print '</body></html>'   
+    
 fname = form.getvalue('fname')
 lname = form.getvalue('lname')
 
@@ -27,5 +38,5 @@ if res:
 elif added:
     print '<p>Successfully added %s %s (%s)</p>' % (fname, lname, uname)
 else:
-    print '<p>Something went wrong there...</p>'
+    print '<p>Something went wrong there: '+ str(added)  +'</p>'
 print '</body></html>'   

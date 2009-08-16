@@ -28,7 +28,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
             self._gotValidateQueryResults, hsh_pw
             )
 
-    def _gotValitateQueryResults(self, rows, pw):
+    def _gotValidateQueryResults(self, rows, pw):
         """Callback to process successful retrieval of user info from database
 
         Arguments:
@@ -76,21 +76,31 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         - `fname`: First name
         - `lname`: Last name
         """
-        self.dbconn.runQuery(
-            "insert into users (username, password, firstname, lastname)) values (?, ?, ?, ?)" ,
+        return self.dbconn.runOperation(
+            "insert into user (username, password, firstname, lastname) values (?, ?, ?, ?)" ,
             (username, passwd, fname, lname)).addCallback(
-            _self._addedUser)
+            self._addedUser).addErrback(self._anError)
 
-    def _addedUser(self, rows):
+    def _addedUser(self, arg):
         """Callback after successfully adding a user
         
         Arguments:
-        - `rows`:  result set
+        - `arg`:  None
         """
         return True
+
+    def _anError(self, *args):
+        """
+        
+        Arguments:
+        - `args`:
+        """
+        return False
+        
+        
         
 
-db_DRIVER = "sqlite3"
+DB_DRIVER = "sqlite3"
 DB_ARGS = {
     'db': 'test.db',
     'user': 'tester',
