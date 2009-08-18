@@ -23,7 +23,7 @@ else:
 fname = form.getvalue('fname')
 lname = form.getvalue('lname')
 
-auth = xmlrpclib.ServerProxy('http://localhost:8082/auth')
+auth = xmlrpclib.ServerProxy('https://localhost:8082/auth')
 res = auth.userExists(uname)
 
 if not res:

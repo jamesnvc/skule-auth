@@ -18,7 +18,7 @@ name = form.getvalue('username')
 pln_password = form.getvalue('password')
 password = crypt.crypt(pln_password,salt)
 
-auth = xmlrpclib.ServerProxy('http://localhost:8082/auth')
+auth = xmlrpclib.ServerProxy('https://localhost:8082/auth')
 res = auth.validateUser(name, password)
 if not res:
     print 'Status: 302 Moved Temporarily'

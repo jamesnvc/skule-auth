@@ -7,7 +7,7 @@ cgitb.enable()
 form = cgi.FieldStorage()
 name = form.getvalue('new_username')
 
-auth = xmlrpclib.ServerProxy('http://localhost:8082/auth')
+auth = xmlrpclib.ServerProxy('https://localhost:8082/auth')
 res = auth.userExists(name)
 
 print 'Content-type: text/html'

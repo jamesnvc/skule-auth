@@ -7,8 +7,8 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
     """
 
     def __init__(self, dbconn):
-        """
-        Initialize server
+        """Initialize server
+        
         Arguments:
         - `dbconn`: Database connection to autheticate users against
         """
@@ -21,6 +21,8 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         Arguments:
         - `username`: Username to validate
         - `hsh_pw`: Hashed password for the user
+        Returns:
+        - A deferred (_gotValidateQueryResults(row, hsh_pw))
         """
         return self.dbconn.runQuery(
             "select userid, password from user where username = ? and password = ?",
@@ -34,6 +36,8 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         Arguments:
         - `rows`: Results
         - `pw`: Hash of password from the user
+        Returns:
+        - (userid, password) if the password is correct, false otherwise
         """
         if rows:
             userid, password = rows[0]
@@ -50,6 +54,8 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         
         Arguments:
         - `username`: Name to check
+        Returns:
+        - A deferred (_gotExistsQueryResults)
         """
         return self.dbconn.runQuery(
             "select userid from user where username = ?", (username,)).addCallback(
@@ -60,6 +66,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         
         Arguments:
         - `rows`: results
+        Returns: The userid of the user if exisits, False otherwise
         """
         if rows:
             return rows[0][0]
@@ -75,6 +82,8 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         - `passwd`: Hash of password for new user
         - `fname`: First name
         - `lname`: Last name
+        Returns:
+        - True on successful insertion, False otherwise
         """
         return self.dbconn.runOperation(
             "insert into user (username, password, firstname, lastname) values (?, ?, ?, ?)" ,
@@ -90,14 +99,12 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         return True
 
     def _anError(self, *args):
-        """
+        """Callback in case of an error
         
         Arguments:
         - `args`:
         """
         return False
-        
-        
         
 
 DB_DRIVER = "sqlite3"
@@ -108,10 +115,11 @@ DB_ARGS = {
     }
 
 if __name__ == "__main__":
-    from twisted.internet import reactor
     from twisted.web import resource
+    from twisted.internet import reactor, ssl
     connection = adbapi.ConnectionPool(DB_DRIVER, 'test.db')
     root = resource.Resource()
     root.putChild('auth', AuthXmlRpc(connection))
-    reactor.listenTCP(8082, server.Site(root))
+    sslContext = ssl.DefaultOpenSSLContextFactory('KeyGen/testing/server.key','Keygen/testing/server.crt')
+    reactor.listenSSL(8082, server.Site(root), sslContext)
     reactor.run()
