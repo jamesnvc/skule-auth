@@ -99,10 +99,10 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         return True
 
     def _anError(self, *args):
-        """Callback in case of an error
+        """Callback in case of an error adding a user
         
         Arguments:
-        - `args`:
+        - `args`: None
         """
         return False
         
