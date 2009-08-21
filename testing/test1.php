@@ -1,9 +1,15 @@
+<?php
+session_start();
+unset($_SESSION['rand_val']);
+$_SESSION['rand_val'] = rand();
+?>
 <html>
 <head><title>Test 1</title></head>
 <body>
 <pre>
 <?php
 print_r($_COOKIE);
+print_r($_SESSION);
 ?>
 </pre>
 <p>Test One:
@@ -18,7 +24,8 @@ print_r($_COOKIE);
    <label title="A string" for="foo">String:
       <input type="text" name="foo" />
    </label>
-   <input type="hidden" name="bar" value="<?php echo $_COOKIE['sid'] ?>"/>
+   <input type="hidden" name="bar" value="<?php echo hash('sha256', $_COOKIE['sid'] . $_SESSION['rand_val'])?>"/>
+   <input type="hidden" name="phpses" value="<?php echo session_id(); ?>">
    <input type="submit" value="done" />
 </form>
 </p>
