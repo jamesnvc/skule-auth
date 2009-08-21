@@ -120,6 +120,6 @@ if __name__ == "__main__":
     connection = adbapi.ConnectionPool(DB_DRIVER, 'test.db')
     root = resource.Resource()
     root.putChild('auth', AuthXmlRpc(connection))
-    sslContext = ssl.DefaultOpenSSLContextFactory('KeyGen/testing/server.key','Keygen/testing/server.crt')
+    sslContext = ssl.DefaultOpenSSLContextFactory('testing/KeyGen/server.key','testing/KeyGen/server.crt')
     reactor.listenSSL(8082, server.Site(root), sslContext)
     reactor.run()
