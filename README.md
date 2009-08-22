@@ -1,5 +1,5 @@
 README
-============== 
+==============
 
 This is the authentication backend that will be used by the Skule student website
 
