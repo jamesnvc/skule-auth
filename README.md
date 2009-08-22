@@ -14,7 +14,7 @@ appropriately.
 Generating SSL Certs
 --------------------
 
-<code>
+<pre>
 $ openssl genrsa -des3 -out server.key 1024
 
 $ openssl req -new -key server.key -out server.csr
@@ -24,21 +24,21 @@ $ cp server.key server.key.org
 $ openssl rsa -in server.key.org -out server.key
 
 $ openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
-</code>
+</pre>
 
 Then, you'll want to notify Apache of this:  
 
-<code>
+<pre>
 $ cp server.crt /etc/apache2/server.crt
 
 $ cp server.key /etc/apache2/server.key
-</code>
+</pre>
 
 and add lines to your Apache configuration, probably something along the line of
 
-<code>
+<pre>
 SSLCertificateFile "/etc/apache2/server.crt"
 
 SSLCertificateKeyFile "/etc/apache2/server.key"
-</code>
+</pre>
 	
