@@ -1,42 +1,61 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://w3.org/1999/xhtml" xml:lang="en">
-  <head><title>Login</title></head>
+  <head>
+    <title>Login</title>
+    <link rel="stylesheet" href="/~james/css/bluetrip/screen.css" type="text/css" media="screen, projection"/>
+    <link rel="stylesheet" href="/~james/css/bluetrip/print.css" type="text/css" media="print"/> 
+    <!--[if IE]>
+        <link rel="stylesheet" href="/~james/css/bluetrip/ie.css" type="text/css" media="screen, projection"/>
+        <![endif]-->
+    <link rel="stylesheet" href="/~james/css/bluetrip/style.css" type="text/css" media="screen, projection"/>
+  </head>
   <body>
-    <h1>Login</h1>
-    <form method="POST" action="https://localhost/~james/cgi-bin/login.py">
-      <label for="username">Username:</label>
-      <input type="text" id="username" name="username"/>        
-      <br />
-      <label for="password">Password:</label>
-      <input type="password" name="password" id="password"/>
-      <br/>
-      <input type="submit" name="submit"/>
-    </form>
-    <h1>Check</h1>
-    <form method="POST" action="https://localhost/~james/cgi-bin/check.py">
-      <label for="new_username">Username</label>
-      <input type="text" id="new_username" name="new_username"/>
-      <input type="submit" name="submit_create"/>
-    </form>
-    <h1>Create</h1>
-    <form method="POST" action="https://localhost/~james/cgi-bin/create.py">
-      <label for="create_name">Username</label>
-      <input type="text" name="create_name" id="create_name"/>
-      <br/>
-      <label for="create_password">Password</label>
-      <input type="password" name="create_password" id="create_password" />
-      <br/>
-      <label for="verify_password">Verify password</label>
-      <input type="password" name="verify_password" id="verify_password" />
-      <br/>
-      <label for="fname">First Name</label>
-      <input type="text" name="fname" id="fname" />
-      <br/>
-      <label for="lname">Last Name</label>
-      <input type="text" name="lname" id="lname" />
-      <br/>
-      <input type="submit" name="Create"/>
-    </form>
+    <div class="container">
+      <div class="span-8">
+        <h1>Login</h1>
+        <form method="post" action="https://localhost/~james/cgi-bin/login.py">
+          <label for="username">Username:</label>
+          <input type="text" id="username" name="username"/>        
+          <br />
+          <label for="password">Password:</label>
+          <input type="password" name="password" id="password"/>
+          <br/>
+          <input type="submit" name="submit"/>
+        </form>
+      </div>
+      <div class="span-8">
+        <h1>Check</h1>
+        <form method="post" action="https://localhost/~james/cgi-bin/check.py">
+          <label for="new_username">Username</label>
+          <input type="text" id="new_username" name="new_username"/>
+          <input type="submit" name="submit_create"/>
+        </form>
+      </div>
+      <div class="span-8 last">
+        <h1>Create</h1>
+        <form method="post" action="https://localhost/~james/cgi-bin/create.py">
+          <label for="create_name">Username</label>
+          <input type="text" name="create_name" id="create_name"/>
+          <br/>
+          <label for="create_password">Password</label>
+          <input type="password" name="create_password" id="create_password" />
+          <br/>
+          <label for="verify_password">Verify password</label>
+          <input type="password" name="verify_password" id="verify_password" />
+          <br/>
+          <label for="fname">First Name</label>
+          <input type="text" name="fname" id="fname" />
+          <br/>
+          <label for="lname">Last Name</label>
+          <input type="text" name="lname" id="lname" />
+          <br/>
+          <input type="submit" name="Create"/>
+        </form>
+      </div>
+    </div>
+    <div class="container">
+      <p style="text-align: center">
+        Go back to <a href="./test1.php">start</a>
+      </p>
   </body>
 </html>
-
