@@ -38,5 +38,5 @@ if res:
 elif added:
     print '<p>Successfully added %s %s (%s)</p>' % (fname, lname, uname)
 else:
-    print '<p>Something went wrong there: '+ str(added)  +'</p>'
+    print '<p>Something went wrong there: userExists returned '+ str(added)  +'</p>'
 print '</body></html>'   

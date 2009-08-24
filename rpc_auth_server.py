@@ -25,7 +25,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         - A deferred (_gotValidateQueryResults(row, hsh_pw))
         """
         return self.dbconn.runQuery(
-            "select userid, password from user where username = ? and password = ?",
+            "SELECT userid, password FROM user WHERE username = ? AND password = ?",
             (username, hsh_pw)).addCallback(
             self._gotValidateQueryResults, hsh_pw
             )
@@ -55,11 +55,11 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         Arguments:
         - `username`: Name to check
         Returns:
-        - A deferred (_gotExistsQueryResults)
+        - A deferred (see `_gotExistsQueryResults`)
         """
         return self.dbconn.runQuery(
-            "select userid from user where username = ?", (username,)).addCallback(
-            self._gotExistsQueryResults)
+            "SELECT userid FROM user WHERE username = ?", (username,) ).addCallback(
+            self._gotExistsQueryResults).addErr	
 
     def _gotExistsQueryResults(self, rows):
         """Callback to process successful retrieval of username from database
@@ -86,7 +86,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         - True on successful insertion, False otherwise
         """
         return self.dbconn.runOperation(
-            "insert into user (username, password, firstname, lastname) values (?, ?, ?, ?)" ,
+            "INSERT INTO user (username, password, firstname, lastname) VALUES (?, ?, ?, ?)" ,
             (username, passwd, fname, lname)).addCallback(
             self._addedUser).addErrback(self._anError)
 

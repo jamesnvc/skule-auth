@@ -4,9 +4,10 @@ import sys
 import crypt
 import string
 import cgi
-import cgitb; cgitb.enable()
 import Cookie
 import xmlrpclib
+import cgitb
+cgitb.enable()
 
 salt = 'ab'
 max_age = 30*60 # 30 minutes maximum age
@@ -30,7 +31,7 @@ loggedinCookie = Cookie.SimpleCookie()
 loggedinCookie['username'] = name
 loggedinCookie['username']['max-age'] = max_age
 loggedinCookie['username']['path'] = relative_path
-# Session ID
+# Make the session ID
 x = []
 while len(x) < 20:
     y = os.urandom(1) 
