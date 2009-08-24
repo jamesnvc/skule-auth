@@ -41,4 +41,15 @@ SSLCertificateFile "/etc/apache2/server.crt"
 
 SSLCertificateKeyFile "/etc/apache2/server.key"
 </pre>
-	
+
+Generating the database
+--------------------
+
+The database used in the sample code is a SQLite database for ease of testing.
+To create the database, simply run the following code:
+
+<pre>
+sqlite3 test.db < testing.sql
+</pre>
+
+which will create a database named "test.db" containing the user tables.
