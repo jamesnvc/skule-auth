@@ -1,8 +1,10 @@
 # Authentication server for Skule.ca
 import os
 import string
+import time
 from twisted.web import server, xmlrpc
 from twisted.enterprise import adbapi
+from twisted.internet import base
 
 class AuthXmlRpc(xmlrpc.XMLRPC):
     """XML/RPC authentication server for skule.ca
@@ -17,6 +19,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         self.sessions = {}
         self.dbconn = dbconn
         self.allowNone = True
+        self.timeout = 30 * 60
 
     def xmlrpc_validateUser(self,username,hsh_pw):
         """Validate the given username/password
@@ -54,7 +57,8 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
                 
                 # TODO: Set a timeout to erase this after `timeout`
                 self.sessions[userid] = sid
-                
+                def sessionTimeout(): del self.sessions[userid]
+                base.DelayedCall( time.time() + self.timeout, sessionTimeout, [], {}, None, None )
                 return (userid, sid)
             else:
                 return False # wrong password
