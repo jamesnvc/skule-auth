@@ -1,4 +1,5 @@
 <?php
+require_once 'XML/RPC.php';
 session_id($_POST['phpses']);
 session_start();
 ?>
@@ -14,12 +15,19 @@ session_start();
 </head>
 <body>
 <div class="container">
-<?php if ( isset($_COOKIE['sid']) && $_POST['bar'] == hash('sha256', $_COOKIE['sid'] . $_SESSION['rand_val'])) { ?>
-<p>You entered <? echo $_POST['foo'] ?></p>
-<?php } else { ?>
+<?php
+  if ( isset($_COOKIE['uid']) && isset($_COOKIE['sid']) && $_POST['bar'] == hash('sha256', $_COOKIE['sid'] . $_SESSION['rand_val']) ) {
+    $client = new XML_RPC_Client('/auth', "https://localhost", 8082);
+    $msg = new XML_RPC_Message('checkUserSession', array(new XML_RPC_Value($_COOKIE['uid'], "int"), 
+                                                         new XML_RPC_Value($_COOKIE['sid'], "string")));
+    $resp = $client->send($msg);
+    if ( $resp->value()->scalarval() ) {
+    ?> 
+      <p>You entered <? echo $_POST['foo']; ?></p>
+        <?php } else { ?>
 <p>Authentication error!</p>
 <p><a href="./test1.php">Try again?</a></p>
-<?php } ?>
+<?php } } ?>
 </div>
 </body>
 </html>

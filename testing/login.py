@@ -27,20 +27,20 @@ if not res:
     print
     exit
     
+uid, sid = res    
+
 loggedinCookie = Cookie.SimpleCookie()
 loggedinCookie['username'] = name
 loggedinCookie['username']['max-age'] = max_age
 loggedinCookie['username']['path'] = relative_path
-# Make the session ID
-x = []
-while len(x) < 20:
-    y = os.urandom(1) 
-    if y in (string.letters+string.digits):
-        x += y
-sid = ''.join(x)
+
 loggedinCookie['sid'] = sid
 loggedinCookie['sid']['max-age'] = max_age
 loggedinCookie['sid']['path'] = relative_path
+
+loggedinCookie['uid'] = uid
+loggedinCookie['uid']['max-age'] = max_age
+loggedinCookie['uid']['path'] = relative_path
 
 print 'Status: 302 Moved Temporarily'
 print loggedinCookie

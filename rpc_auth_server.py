@@ -1,4 +1,6 @@
 # Authentication server for Skule.ca
+import os
+import string
 from twisted.web import server, xmlrpc
 from twisted.enterprise import adbapi
 
@@ -12,6 +14,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         Arguments:
         - `dbconn`: Database connection to autheticate users against
         """
+        self.sessions = {}
         self.dbconn = dbconn
         self.allowNone = True
 
@@ -37,12 +40,22 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         - `rows`: Results
         - `pw`: Hash of password from the user
         Returns:
-        - (userid, password) if the password is correct, false otherwise
+        - `(userid, sid)`: if the password is correct, false otherwise
         """
         if rows:
             userid, password = rows[0]
             if password == pw:
-                return (userid, password)
+                x = [ ]
+                while len(x) < 20:
+                    y = os.urandom(1) 
+                    if y in (string.letters+string.digits):
+                        x += y
+                sid = ''.join(x)
+                
+                # TODO: Set a timeout to erase this after `timeout`
+                self.sessions[userid] = sid
+                
+                return (userid, sid)
             else:
                 return False # wrong password
         else:
@@ -105,7 +118,17 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         - `args`: None
         """
         return False
+    
+    def xmlrpc_checkUserSession(self, userid, sid):
+        """Checks that the session id of the user with id `userid` is equivalent to the supplied session id
         
+        Arguments:
+        - `userid`: User id to check 
+        - `sid`: Session id to verify
+        Returns: True if matches, false otherwise
+        """
+        return (userid in self.sessions) and (self.sessions[userid] == sid)
+
 
 DB_DRIVER = "sqlite3"
 DB_ARGS = {
