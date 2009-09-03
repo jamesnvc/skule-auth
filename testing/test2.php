@@ -27,7 +27,10 @@ session_start();
         <?php } else { ?>
 <p>Authentication error!</p>
 <p><a href="./test1.php">Try again?</a></p>
-<?php } } ?>
+<?php } else {?>
+<p>Authentication error!</p>
+<p><a href="./test1.php">Try again?</a></p>
+<?php } ?>
 </div>
 </body>
 </html>
