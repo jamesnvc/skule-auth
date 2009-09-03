@@ -10,7 +10,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
     """XML/RPC authentication server for skule.ca
     """
 
-    def __init__(self, dbconn):
+    def __init__(self, dbconn, userTimeout):
         """Initialize server
         
         Arguments:
@@ -19,7 +19,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         self.sessions = {}
         self.dbconn = dbconn
         self.allowNone = True
-        self.timeout = 30 * 60
+        self.timeout = userTimeout
 
     def xmlrpc_validateUser(self,username,hsh_pw):
         """Validate the given username/password
@@ -134,19 +134,23 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         return (userid in self.sessions) and (self.sessions[userid] == sid)
 
 
-DB_DRIVER = "sqlite3"
-DB_ARGS = {
-    'db': 'test.db',
-    'user': 'tester',
-    'passwd': 'tester',
-    }
-
 if __name__ == "__main__":
     from twisted.web import resource
     from twisted.internet import reactor, ssl
-    connection = adbapi.ConnectionPool(DB_DRIVER, 'test.db')
+    # Configuration values
+    import ConfigParser
+    config = ConfigParser.ConfigParser()
+    config.read('server_settings.conf')
+    timeout = config.getfloat('Server Settings', 'cookie_timeout_minutes') * 60
+    db_driver = config.get('Server Settings', 'db_driver')
+    db_name = config.get('Server Settings', 'db_name')
+    listen_port = config.getint('Server Settings', 'rpc_listen_port')
+    ssl_key = config.get('Server Settings', 'ssl_key')
+    ssl_cert = config.get('Server Settings', 'ssl_cert')
+    
+    connection = adbapi.ConnectionPool(db_driver, db_name)
     root = resource.Resource()
-    root.putChild('auth', AuthXmlRpc(connection))
-    sslContext = ssl.DefaultOpenSSLContextFactory('testing/KeyGen/server.key','testing/KeyGen/server.crt')
-    reactor.listenSSL(8082, server.Site(root), sslContext)
+    root.putChild('auth', AuthXmlRpc(connection, timeout))
+    sslContext = ssl.DefaultOpenSSLContextFactory(ssl_key, ssl_cert)
+    reactor.listenSSL(listen_port, server.Site(root), sslContext)
     reactor.run()
