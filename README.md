@@ -4,11 +4,11 @@ README
 This is the authentication backend that will be used by the Skule student website
 
 To run this on your own server, simply install Twisted, then run
-`rpc\_auth\_server.py`.  Included in the `testing` directory is a sample of the
+`rpc_auth_server.py`.  Included in the `testing` directory is a sample of the
 usage of this system.
 
 Note that to use SSL, you will also have to generate SSL certs, change the
-paths to them in `rpc\_auth\_server`, and configure Apache and mod_ssl
+paths to them in `rpc_auth_server`, and configure Apache and mod_ssl
 appropriately.
 
 Generating SSL Certs
