@@ -55,7 +55,6 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
                         x += y
                 sid = ''.join(x)
                 
-                # TODO: Set a timeout to erase this after `timeout`
                 self.sessions[userid] = sid
                 def sessionTimeout(): del self.sessions[userid]
                 base.DelayedCall( time.time() + self.timeout, sessionTimeout, [], {}, None, None )
@@ -153,4 +152,9 @@ if __name__ == "__main__":
     root.putChild('auth', AuthXmlRpc(connection, timeout))
     sslContext = ssl.DefaultOpenSSLContextFactory(ssl_key, ssl_cert)
     reactor.listenSSL(listen_port, server.Site(root), sslContext)
+    
+    print "Starting server on port %s, using %s database %s." % (listen_port, db_driver, db_name)
+    print "Using %s and %s for SSL." % (ssl_key, ssl_cert)
+    print "Using a timeout of %f seconds" % (timeout)
+    
     reactor.run()
