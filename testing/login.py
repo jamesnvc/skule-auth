@@ -8,10 +8,17 @@ import Cookie
 import xmlrpclib
 import cgitb
 cgitb.enable()
+# Configuration values
+import ConfigParser
+config = ConfigParser.ConfigParser()
+config.read('server_settings.conf')
+timeout = config.getfloat('Server Settings', 'cookie_timeout_minutes') * 60
+listen_port = config.getint('Server Settings', 'rpc_listen_port')
+cookie_path = config.get('Server Settings', 'cookie_path')
 
 salt = 'ab'
-max_age = 30*60 # 30 minutes maximum age
-relative_path = '/~james'
+max_age = timeout
+relative_path = cookie_path
 
 # Get variables from request
 form = cgi.FieldStorage()
@@ -19,7 +26,7 @@ name = form.getvalue('username')
 pln_password = form.getvalue('password')
 password = crypt.crypt(pln_password,salt)
 
-auth = xmlrpclib.ServerProxy('https://localhost:8082/auth')
+auth = xmlrpclib.ServerProxy('https://localhost:%d/auth' % listen_port)
 res = auth.validateUser(name, password)
 if not res:
     print 'Status: 302 Moved Temporarily'

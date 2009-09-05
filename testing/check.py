@@ -4,10 +4,16 @@ import cgi
 import cgitb
 cgitb.enable()
 
+import ConfigParser
+config = ConfigParser.ConfigParser()
+config.read('server_settings.conf')
+listen_port = config.getint('Server Settings', 'rpc_listen_port')
+
+
 form = cgi.FieldStorage()
 name = form.getvalue('new_username')
 
-auth = xmlrpclib.ServerProxy('https://localhost:8082/auth')
+auth = xmlrpclib.ServerProxy('https://localhost:%d/auth' % listen_port)
 res = auth.userExists(name)
 
 print 'Content-type: text/html'

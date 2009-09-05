@@ -75,7 +75,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         """
         return self.dbconn.runQuery(
             "SELECT userid FROM user WHERE username = ?", (username,) ).addCallback(
-            self._gotExistsQueryResults).addErr	
+            self._gotExistsQueryResults)
 
     def _gotExistsQueryResults(self, rows):
         """Callback to process successful retrieval of username from database
@@ -156,5 +156,6 @@ if __name__ == "__main__":
     print "Starting server on port %s, using %s database %s." % (listen_port, db_driver, db_name)
     print "Using %s and %s for SSL." % (ssl_key, ssl_cert)
     print "Using a timeout of %f seconds" % (timeout)
+    print "^C to stop the server"
     
     reactor.run()

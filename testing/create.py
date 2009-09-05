@@ -6,6 +6,12 @@ import cgitb
 import crypt
 cgitb.enable()
 
+# Configuration values
+import ConfigParser
+config = ConfigParser.ConfigParser()
+config.read('server_settings.conf')
+listen_port = config.getint('Server Settings', 'rpc_listen_port')
+
 form = cgi.FieldStorage()
 uname = form.getvalue('create_name')
 passwd = form.getvalue('create_password')
