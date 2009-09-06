@@ -4,7 +4,7 @@ import string
 import time
 from twisted.web import server, xmlrpc
 from twisted.enterprise import adbapi
-from twisted.internet import base
+from twisted.internet import task
 
 class AuthXmlRpc(xmlrpc.XMLRPC):
     """XML/RPC authentication server for skule.ca
@@ -57,7 +57,9 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
                 
                 self.sessions[userid] = sid
                 def sessionTimeout(): del self.sessions[userid]
-                base.DelayedCall( time.time() + self.timeout, sessionTimeout, [], {}, None, None )
+                d = task.deferLater(reactor, self.timeout, sessionTimeout)
+                def timedOut(): print "%d: The session for user %d has expired" % (time.time(), userid)
+                d.addCallback(timedOut)
                 return (userid, sid)
             else:
                 return False # wrong password
