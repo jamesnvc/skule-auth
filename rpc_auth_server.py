@@ -159,5 +159,7 @@ if __name__ == "__main__":
     print "Using %s and %s for SSL." % (ssl_key, ssl_cert)
     print "Using a timeout of %f seconds" % (timeout)
     print "^C to stop the server"
-    
-    reactor.run()
+    try:
+        reactor.run()
+    finally:
+        connection.close()
