@@ -49,3 +49,16 @@ sqlite3 test.db < testing.sql
 </pre>
 
 which will create a database named "test.db" containing the user tables.
+
+Other Considerations
+--------------------
+
+The Python CGI scripts currently use cgitb for debugging purposes.  When
+deploying in a production environment, one will probably want to remove the lines
+
+<pre>
+import cgitb
+cgitb.enable()
+</pre>
+
+from the various scripts (namely `check.py`, `create.py`, and `login.py`).
