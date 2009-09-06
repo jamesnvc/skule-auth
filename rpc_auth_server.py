@@ -48,9 +48,11 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         if rows:
             userid, password = rows[0]
             if password == pw:
+                # Generating a random session cookie
                 x = [ ]
                 while len(x) < 20:
-                    y = os.urandom(1) 
+                    y = os.urandom(1)
+                    # TODO: Currently making sure the cookie is printable - is this necessary?
                     if y in (string.letters+string.digits):
                         x += y
                 sid = ''.join(x)
@@ -142,7 +144,7 @@ if __name__ == "__main__":
     import ConfigParser
     config = ConfigParser.ConfigParser()
     config.read('server_settings.conf')
-    timeout = config.getfloat('Server Settings', 'cookie_timeout_minutes') * 60
+    timeout_seconds = config.getfloat('Server Settings', 'cookie_timeout_minutes') * 60
     db_driver = config.get('Server Settings', 'db_driver')
     db_name = config.get('Server Settings', 'db_name')
     listen_port = config.getint('Server Settings', 'rpc_listen_port')
@@ -151,13 +153,13 @@ if __name__ == "__main__":
     
     connection = adbapi.ConnectionPool(db_driver, db_name)
     root = resource.Resource()
-    root.putChild('auth', AuthXmlRpc(connection, timeout))
+    root.putChild('auth', AuthXmlRpc(connection, timeout_seconds))
     sslContext = ssl.DefaultOpenSSLContextFactory(ssl_key, ssl_cert)
     reactor.listenSSL(listen_port, server.Site(root), sslContext)
     
     print "Starting server on port %s, using %s database %s." % (listen_port, db_driver, db_name)
     print "Using %s and %s for SSL." % (ssl_key, ssl_cert)
-    print "Using a timeout of %f seconds" % (timeout)
+    print "Using a timeout of %f seconds" % (timeout_seconds)
     print "^C to stop the server"
     try:
         reactor.run()
