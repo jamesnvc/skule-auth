@@ -60,7 +60,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
                 self.sessions[userid] = sid
                 def sessionTimeout(): del self.sessions[userid]
                 d = task.deferLater(reactor, self.timeout, sessionTimeout)
-                def timedOut(): print "%d: The session for user %d has expired" % (time.time(), userid)
+                def timedOut(*args): print "%d: The session for user %d has expired" % (time.time(), userid)
                 d.addCallback(timedOut)
                 return (userid, sid)
             else:
