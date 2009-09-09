@@ -3,7 +3,8 @@ README
 
 This is the authentication backend that will be used by the Skule student website
 
-To run this on your own server, simply install Twisted, then run
+To run this on your own server, simply install Twisted, set the appropriate
+values in the configuration file `server_settings.conf`, then run
 `rpc_auth_server.py`.  Included in the `testing` directory is a sample of the
 usage of this system.
 
