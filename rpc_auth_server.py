@@ -34,7 +34,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
             "SELECT userid, password FROM user WHERE username = ? AND password = ?",
             (username, hsh_pw)).addCallback(
             self._gotValidateQueryResults, hsh_pw
-            )
+            ).addErrback(self._anError)
 
     def _gotValidateQueryResults(self, rows, pw):
         """Callback to process successful retrieval of user info from database
@@ -82,7 +82,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         """
         return self.dbconn.runQuery(
             "SELECT userid FROM user WHERE username = ?", (username,) ).addCallback(
-            self._gotExistsQueryResults)
+            self._gotExistsQueryResults).addErrback(self._anError)
 
     def _gotExistsQueryResults(self, rows):
         """Callback to process successful retrieval of username from database
