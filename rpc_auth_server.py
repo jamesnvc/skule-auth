@@ -52,7 +52,6 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
                 x = [ ]
                 while len(x) < 20:
                     y = os.urandom(1)
-                    # TODO: Currently making sure the cookie is printable - is this necessary?
                     if y in (string.letters+string.digits):
                         x += y
                 sid = ''.join(x)
