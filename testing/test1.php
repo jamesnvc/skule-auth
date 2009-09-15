@@ -17,7 +17,7 @@ $_SESSION['rand_val'] = rand();
   <div class="container">
   <h1>Test One:</h1>
   <?php if (isset($_COOKIE['username'])) { ?>
-   <p>Hello, <? echo $_COOKIE['username'] ?>!</p>
+   <p>Hello, <?php echo $_COOKIE['username'] ?>!</p>
    <p><form action="logout.php" method="POST"><input type="submit" value="Logout"/></form></p>
 <?php    } else { ?>
    <p>Please <a href="./login.html">Login</a></p>

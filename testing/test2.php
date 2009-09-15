@@ -23,7 +23,7 @@ session_start();
     $resp = $client->send($msg);
     if ( $resp->value()->scalarval() ) {
     ?> 
-      <p>You entered <? echo $_POST['foo']; ?></p>
+      <p>You entered <?php echo $_POST['foo']; ?></p>
         <?php } else { ?>
 <p>Authentication error!</p>
 <p><a href="./test1.php">Try again?</a></p>
