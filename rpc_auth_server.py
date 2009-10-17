@@ -52,7 +52,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
             hsh_pw = hashlib.sha1(pw+salt).hexdigest()
             if password == hsh_pw:
                 # Generating a random session cookie
-                sid = rand_string(20)
+                sid = auth_lib.rand_string(20)
                 self.sessions[userid] = sid
                 def sessionTimeout(): del self.sessions[userid]
                 d = task.deferLater(reactor, self.timeout, sessionTimeout)
@@ -61,10 +61,13 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
                 def timedOut(*args): print "%d: The session for user %d has expired" % (time.time(), userid)
                 d.addCallback(timedOut)
                 
+                print "uid %d logged in" % userid
                 return (userid, sid)
             else:
+                print "Wrong password for uid %d" % userid
                 return False # wrong password
         else:
+            print "No such user"
             return False # No such user
 
     def xmlrpc_userExists(self, username):
@@ -98,15 +101,16 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         
         Arguments:
         - `username`: username to add
-        - `passwd`: Hash of password for new user
+        - `passwd`: Password for new user
         - `fname`: First name
         - `lname`: Last name
         Returns:
         - True on successful insertion, False otherwise
         """
+        salt = auth_lib.rand_string(10)
         return self.dbconn.runOperation(
             "INSERT INTO user (username, password, firstname, lastname, salt) VALUES (?, ?, ?, ?, ?)" ,
-            (username, passwd, fname, lname, auth_lib.rand_string(10))).addCallback(
+            (username, hashlib.sha1(passwd+salt).hexdigest(), fname, lname, salt)).addCallback(
             self._addedUser).addErrback(self._anError)
 
     def _addedUser(self, arg):

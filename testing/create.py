@@ -16,16 +16,14 @@ form = cgi.FieldStorage()
 uname = form.getvalue('create_name')
 passwd = form.getvalue('create_password')
 passwd2 = form.getvalue('verify_password')
-salt = rand_sting(10)
-if passwd == passwd2:
-    hsh_pw = hashlib.sha1(passwd+salt).hexdigest()
-else:
+if passwd != passwd2:
     print 'Content-type: text/html'
     print
     print '<html><head><title>User exists checking</title></head>'
     print '<body>'
     print '<p>Passwords don\'t match</p>'
-    print '</body></html>'   
+    print '</body></html>'
+    exit
     
 fname = form.getvalue('fname')
 lname = form.getvalue('lname')
@@ -34,7 +32,7 @@ auth = xmlrpclib.ServerProxy('https://localhost:8082/auth')
 res = auth.userExists(uname)
 
 if not res:
-    added = auth.createUser(uname, hsh_pw, fname, lname)
+    added = auth.createUser(uname, passwd, fname, lname)
 
 print 'Content-type: text/html'
 print
