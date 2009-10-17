@@ -1,7 +1,6 @@
 #!/usr/bin/env python2.6
 import os
 import sys
-import crypt
 import string
 import cgi
 import Cookie
@@ -16,7 +15,6 @@ timeout = config.getfloat('Server Settings', 'cookie_timeout_minutes') * 60
 listen_port = config.getint('Server Settings', 'rpc_listen_port')
 cookie_path = config.get('Server Settings', 'cookie_path')
 
-salt = 'ab'
 max_age = timeout
 relative_path = cookie_path
 
