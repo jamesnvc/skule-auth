@@ -3,7 +3,7 @@
 import xmlrpclib
 import cgi
 import cgitb
-import crypt
+import hashlib
 cgitb.enable()
 
 # Configuration values
@@ -16,8 +16,9 @@ form = cgi.FieldStorage()
 uname = form.getvalue('create_name')
 passwd = form.getvalue('create_password')
 passwd2 = form.getvalue('verify_password')
+salt = rand_sting(10)
 if passwd == passwd2:
-    hsh_pw = crypt.crypt(passwd, 'ab')
+    hsh_pw = hashlib.sha1(passwd+salt).hexdigest()
 else:
     print 'Content-type: text/html'
     print

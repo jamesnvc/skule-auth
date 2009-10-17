@@ -1,7 +1,9 @@
 # Authentication server for Skule.ca
+import auth_lib
 import os
 import string
 import time
+import hashlib
 from twisted.web import server, xmlrpc
 from twisted.enterprise import adbapi
 from twisted.internet import task
@@ -21,19 +23,19 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         self.allowNone = True
         self.timeout = userTimeout
 
-    def xmlrpc_validateUser(self,username,hsh_pw):
+    def xmlrpc_validateUser(self,username,pln_pw):
         """Validate the given username/password
 
         Arguments:
         - `username`: Username to validate
-        - `hsh_pw`: Hashed password for the user
+        - `pln_pw`: Entered password
         Returns:
         - A deferred (_gotValidateQueryResults(row, hsh_pw))
         """
         return self.dbconn.runQuery(
-            "SELECT userid, password FROM user WHERE username = ? AND password = ?",
-            (username, hsh_pw)).addCallback(
-            self._gotValidateQueryResults, hsh_pw
+            "SELECT userid, password, salt FROM user WHERE username = ?",
+            (username, )).addCallback(
+            self._gotValidateQueryResults, pln_pw
             ).addErrback(self._anError)
 
     def _gotValidateQueryResults(self, rows, pw):
@@ -41,21 +43,16 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
 
         Arguments:
         - `rows`: Results
-        - `pw`: Hash of password from the user
+        - `pw`: Password from the user
         Returns:
         - `(userid, sid)`: if the password is correct, false otherwise
         """
         if rows:
-            userid, password = rows[0]
-            if password == pw:
+            userid, password, salt = rows[0]
+            hsh_pw = hashlib.sha1(pw+salt).hexdigest()
+            if password == hsh_pw:
                 # Generating a random session cookie
-                x = [ ]
-                while len(x) < 20:
-                    y = os.urandom(1)
-                    if y in (string.letters+string.digits):
-                        x += y
-                sid = ''.join(x)
-                
+                rand_string(20)
                 self.sessions[userid] = sid
                 def sessionTimeout(): del self.sessions[userid]
                 d = task.deferLater(reactor, self.timeout, sessionTimeout)

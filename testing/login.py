@@ -24,10 +24,9 @@ relative_path = cookie_path
 form = cgi.FieldStorage()
 name = form.getvalue('username')
 pln_password = form.getvalue('password')
-password = crypt.crypt(pln_password,salt)
 
 auth = xmlrpclib.ServerProxy('https://localhost:%d/auth' % listen_port)
-res = auth.validateUser(name, password)
+res = auth.validateUser(name, pln_password)
 if not res:
     print 'Status: 302 Moved Temporarily'
     print "Location: ../testing/test1.php"
