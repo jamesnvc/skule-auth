@@ -30,7 +30,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         - `username`: Username to validate
         - `pln_pw`: Entered password
         Returns:
-        - A deferred (_gotValidateQueryResults(row, hsh_pw))
+        - A deferred (_gotValidateQueryResults(row, pln_pw))
         """
         return self.dbconn.runQuery(
             "SELECT userid, password, salt FROM user WHERE username = ?",
@@ -52,7 +52,7 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
             hsh_pw = hashlib.sha1(pw+salt).hexdigest()
             if password == hsh_pw:
                 # Generating a random session cookie
-                rand_string(20)
+                sid = rand_string(20)
                 self.sessions[userid] = sid
                 def sessionTimeout(): del self.sessions[userid]
                 d = task.deferLater(reactor, self.timeout, sessionTimeout)
@@ -105,8 +105,8 @@ class AuthXmlRpc(xmlrpc.XMLRPC):
         - True on successful insertion, False otherwise
         """
         return self.dbconn.runOperation(
-            "INSERT INTO user (username, password, firstname, lastname) VALUES (?, ?, ?, ?)" ,
-            (username, passwd, fname, lname)).addCallback(
+            "INSERT INTO user (username, password, firstname, lastname, salt) VALUES (?, ?, ?, ?, ?)" ,
+            (username, passwd, fname, lname, auth_lib.rand_string(10))).addCallback(
             self._addedUser).addErrback(self._anError)
 
     def _addedUser(self, arg):
